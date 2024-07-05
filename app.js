@@ -3,6 +3,6 @@ var app = express();
 app.get('/', function (req, res) {
   res.send('Welcome to Bachelor Party App!');
 });
-app.listen(3000, function () {
-  console.log('Bachelor Party App listening on port 3000!');
+app.listen(8080, function () {
+  console.log('Bachelor Party listening on port 8080!');
 });
