@@ -39,6 +39,50 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
+app.get("/resetdb", (req, res) => {
+  pool.query(
+    `SELECT * FROM users`,
+    (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      else {
+        pool.query(`DROP TABLE users`);
+      }
+      pool.query(
+        `CREATE TABLE users
+        (id BIGSERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(200) NOT NULL,
+        email VARCHAR(200) NOT NULL,
+        password VARCHAR(200) NOT NULL,
+        UNIQUE(email))`);
+      console.log(results.rows);
+    }
+  );
+
+  pool.query(
+    `SELECT * FROM challenges`,
+    (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      else {
+        pool.query(`DROP TABLE challenges`);
+      }
+      pool.query(
+        `CREATE TABLE challenges
+        (id BIGSERIAL PRIMARY KEY NOT NULL,
+        email VARCHAR(200) NOT NULL,
+        success BOOLEAN NOT NULL,
+        displayed BOOLEAN NOT NULL,
+        content VARCHAR(600) NOT NULL);`);
+      console.log(results.rows);
+    }
+  );
+  console.log("All required tables created successfully :)");
+  res.redirect("/");
+});
+
 app.get("/users/register", checkAuthenticated, (req, res) => {
   res.render("register");
 });
@@ -97,8 +141,8 @@ app.post("/challenges/register", async (req, res) => {
     errors.push({ message: "Content must be a least 20 characters long" });
   }
 
-  if (content.length > 100) {
-    errors.push({ message: "Content must be maximum 100 characters long" });
+  if (content.length > 200) {
+    errors.push({ message: "Content must be maximum 200 characters long" });
   }
 
   if (errors.length > 0) {
