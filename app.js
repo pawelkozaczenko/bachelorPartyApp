@@ -56,7 +56,6 @@ app.get("/resetdb", (req, res) => {
         email VARCHAR(200) NOT NULL,
         password VARCHAR(200) NOT NULL,
         UNIQUE(email))`);
-      console.log(results.rows);
     }
   );
 
@@ -76,7 +75,6 @@ app.get("/resetdb", (req, res) => {
         success BOOLEAN NOT NULL,
         displayed BOOLEAN NOT NULL,
         content VARCHAR(600) NOT NULL);`);
-      console.log(results.rows);
     }
   );
   console.log("All required tables created successfully :)");
