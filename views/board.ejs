@@ -21,11 +21,30 @@
       <% }) %> <% } %>
     </ul>
     <h4>Challenges</h4>
-    <ul>
-      <% if (typeof challenges != 'undefined') { %> <% challenges.forEach(challenge => { %>
-      <li><%= challenge.email %>: <%= challenge.content %> <%= challenge.displayed %> <%= challenge.success %></li>
-      <% }) %> <% } %>
-    </ul>
+    <% if (typeof challenges != 'undefined') { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Content</th>
+          <th scope="col">User</th>
+          <th scope="col">Displayed</th>
+          <th scope="col">Successfull</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% challenges.forEach(challenge => { %>
+          <tr>
+            <th scope="row"><%= challenge.id %></th>
+            <td><%= challenge.content %></td>
+            <td><%= challenge.email %></td>
+            <td><%= challenge.displayed %></td>
+            <td><%= challenge.success %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <% } %>
     <form action="/challenges/register" method="POST">
       <div>
         <input type="text" id="name" name="name"  value="<%= user %>" readonly/>
