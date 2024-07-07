@@ -60,7 +60,7 @@ app.get("/resetdb", (req, res) => {
   );
 
   pool.query(
-    `SELECT * FROM challenges`,
+    `SELECT * FROM challenges ORDER BY id`,
     (err, results) => {
       if (err) {
         console.log(err);
@@ -71,6 +71,7 @@ app.get("/resetdb", (req, res) => {
       pool.query(
         `CREATE TABLE challenges
         (id BIGSERIAL PRIMARY KEY NOT NULL,
+        name VARCHAR(200) NOT NULL,
         email VARCHAR(200) NOT NULL,
         success BOOLEAN NOT NULL,
         displayed BOOLEAN NOT NULL,
@@ -80,6 +81,21 @@ app.get("/resetdb", (req, res) => {
   console.log("All required tables created successfully :)");
   res.redirect("/");
 });
+
+app.get("/users/all", (req, res) => {
+  console.log('Sekect * fron users');
+  pool.query(
+    `SELECT * FROM users WHERE email <> 'mikolajhalas@bachelor'`,
+    (err, results) => {
+      if (err) {
+        console.log(err);
+      }
+      console.log(results.rows);
+      res.render("users", { user: req.user.name, email: req.user.email, users: results.rows});
+    }
+  );
+});
+
 
 app.get("/users/register", checkAuthenticated, (req, res) => {
   res.render("register");
@@ -94,16 +110,31 @@ app.get("/users/login", checkAuthenticated, (req, res) => {
 app.get("/users/board", checkNotAuthenticated, (req, res) => {
   console.log(req.isAuthenticated());
   console.log(JSON.stringify(req.user));
-  pool.query(
-    `SELECT * FROM challenges`,
-    (err, results) => {
-      if (err) {
-        console.log(err);
+  //redirect for bachelor so he can take challege
+  if (req.user.email == "mikolajhalas@bachelor") {
+    pool.query(
+      `SELECT * FROM challenges WHERE displayed = FALSE ORDER BY id`,
+      (err, results) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(results.rows);
+        res.render("readboard", { user: req.user.name, email: req.user.email, challenge: results.rows[0]});
       }
-      console.log(results.rows);
-      res.render("board", { user: req.user.name, email: req.user.email, challenges: results.rows});
-    }
-  );
+    );
+  }
+  else {
+    pool.query(
+      `SELECT * FROM challenges ORDER BY id`,
+      (err, results) => {
+        if (err) {
+          console.log(err);
+        }
+        console.log(results.rows);
+        res.render("board", { user: req.user.name, email: req.user.email, challenges: results.rows});
+      }
+    );
+  }
 });
 
 app.get("/users/logout", checkNotAuthenticated, (req, res) => {
@@ -117,6 +148,40 @@ app.get("/users/logout", checkNotAuthenticated, (req, res) => {
       res.redirect("/users/login");
     }
   })
+});
+
+app.get('/challenges/take', (req, res) => {
+  // Access query string variables using req.query
+  const id = req.query.id;
+  console.log("Taking challenge #" + id);
+  pool.query(
+    `UPDATE challenges SET displayed = TRUE
+        WHERE id = $1`,
+    [id],
+    (err, results) => {
+      if (err) {
+        throw err;
+      }
+      res.redirect("/users/board");
+    }
+  );
+});
+
+app.get('/challenges/accept', (req, res) => {
+  // Access query string variables using req.query
+  const id = req.query.id;
+  console.log("Accepting challenge #" + id);
+  pool.query(
+    `UPDATE challenges SET success = TRUE
+        WHERE id = $1`,
+    [id],
+    (err, results) => {
+      if (err) {
+        throw err;
+      }
+      res.redirect("/users/board");
+    }
+  );
 });
 
 
@@ -145,7 +210,7 @@ app.post("/challenges/register", async (req, res) => {
 
   if (errors.length > 0) {
     pool.query(
-      `SELECT * FROM challenges`,
+      `SELECT * FROM challenges ORDER BY id`,
       (err, results) => {
         if (err) {
           console.log(err);
@@ -156,17 +221,18 @@ app.post("/challenges/register", async (req, res) => {
       }
     );
   } else {
+    console.log("inserting content of lenth " +  content.length);
     // Validation passed
     pool.query(
-      `INSERT INTO challenges (email, displayed, success, content)
-          VALUES ($1, FALSE, FALSE, $2)`,
-      [email, content],
+      `INSERT INTO challenges (name, email, displayed, success, content)
+          VALUES ($1, $2, FALSE, FALSE, $3)`,
+      [name, email, content],
       (err, results) => {
         if (err) {
           throw err;
         }
         pool.query(
-          `SELECT * FROM challenges`,
+          `SELECT * FROM challenges ORDER BY id`,
           (err, results) => {
             if (err) {
               console.log(err);
