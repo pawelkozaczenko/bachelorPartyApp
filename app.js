@@ -40,9 +40,9 @@ app.get("/", (req, res) => {
 });
 
 app.get("/resetdb", (req, res) => {
-  pool.query(`DROP TABLE users`);
-  pool.query(`DROP TABLE challenges`);
-  /*pool.query(
+  //pool.query(`DROP TABLE users`);
+  //pool.query(`DROP TABLE challenges`);
+  pool.query(
     `CREATE TABLE users
     (id BIGSERIAL PRIMARY KEY NOT NULL,
     name VARCHAR(200) NOT NULL,
@@ -58,7 +58,7 @@ pool.query(
         displayed BOOLEAN NOT NULL,
         content VARCHAR(600) NOT NULL);`);
   console.log("All required tables created successfully :)!");
-  res.redirect("/");*/
+  res.redirect("/");
 });
 
 app.get("/users/all", (req, res) => {
