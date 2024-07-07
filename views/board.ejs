@@ -31,10 +31,10 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">Content</th>
-          <th scope="col">User</th>
-          <th scope="col">Taken</th>
-          <th scope="col">Success</th>
+          <th scope="col">Challenge</th>
+          <th scope="col">Czlonek</th>
+          <th scope="col">Podjete</th>
+          <th scope="col">Sukces</th>
           <th scope="col">Accept</th>
         </tr>
       </thead>
@@ -43,12 +43,12 @@
           <tr>
             <th scope="row"><%= challenge.id %></th>
             <td><textarea disabled><%= challenge.content %></textarea></td>
-            <td><%= challenge.email %></td>
+            <td><%= challenge.name %></td>
             <td><%= challenge.displayed %></td>
             <td><%= challenge.success %></td>
             <td>
               <% if (challenge.email == email && !challenge.success && !challenge.displayed) { %>
-              <a href="/challenges/accept?id=<%= challenge.id %>">Accept</a>
+              <a href="/challenges/accept?id=<%= challenge.id %>">Acceptuje</a>
               <% } %>
             </td>
           </tr>
@@ -64,7 +64,7 @@
         <input type="email" id="email" name="email" value="<%= email %>" readonly style="display: none;"/>
       </div>
       <div>
-        <textarea id="content" name="content" placeholder="Content" required></textarea>
+        <textarea id="content" name="content" placeholder="Challenge" required></textarea>
       </div>
       <div>
         <input type="submit" value="Zapodaj Challenge" />
