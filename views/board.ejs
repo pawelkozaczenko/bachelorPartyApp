@@ -13,9 +13,8 @@
     }
   </style>
   <body>
-    <h4>Board</h4>
-    <h4><a href="/users/logout">Logout</a></h4>
-    <h4>Siema <%= user %> <%= email %></h4>
+    <h4><a href="/users/logout">Spierdalam</a></h4>
+    <h4>Siema <%= user %></h4>
     <ul>
       <% if(messages.success_msg) { %>
       <li><%= messages.success_msg %></li>
@@ -59,10 +58,10 @@
     <% } %>
     <form action="/challenges/register" method="POST">
       <div>
-        <input type="text" id="name" name="name"  value="<%= user %>" readonly/>
+        <input type="text" id="name" name="name"  value="<%= user %>" readonly style="display: none;"/>
       </div>
       <div>
-        <input type="email" id="email" name="email" value="<%= email %>" readonly/>
+        <input type="email" id="email" name="email" value="<%= email %>" readonly style="display: none;"/>
       </div>
       <div>
         <textarea id="content" name="content" placeholder="Content" required></textarea>
