@@ -78,7 +78,7 @@ app.get("/resetdb", (req, res) => {
         content VARCHAR(600) NOT NULL);`);
     }
   );
-  console.log("All required tables created successfully :)");
+  console.log("All required tables created successfully :)!");
   res.redirect("/");
 });
 
